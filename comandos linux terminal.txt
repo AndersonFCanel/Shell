@@ -1,0 +1,17 @@
+man +comando do qual deseja obter ajuda: comando para abrir manual de qualquer comando
+
+df(resumido) ou  sudo fdisk -l : comando para listar as partiçoes no sistema. Obs:df e fdisk possuem parâmetros.
+
+
+
+chmod
+
+chroot
+
+bash
+ 
+bin
+
+
+
+ 

@@ -1,0 +1,256 @@
+Fichas        Partes      Arquivos               
+Registros     Tabelas     Arquivos  -> computação
+
+Arquiovos Squencíaveis => Arquivos com indices(INDEXADOS) -->> ou arquivos de acesso direto.
+COBOL -> criada na codosil
+---------------------------------------------------------------------------------------------------------------
+                       --<<<<<<<<<<<<<--- BANCOS DE DADOS  --->>>>>>>>>>>>>
+
+São compostos por 4 partes 
+1-Base de dados
+2-Sistemas Gerenciador (SGDB-(port)  - DMS(irg))
+3-Linguagens de Exploração
+4-Programas adcionais(ex: gerenciador de usuários, otmizador de dados)
+
+Caracteristicas
+>>
+Dados Hieraqrquicos -> Criação da IBM  ==>>MODELO HIERARQUICO ==>>Não usado hoje.
+Dados em Rede -> Modelo em rede  ==>>Não usado hoje.
+
+MODELO RELACIONAL-> OS DASDOS SE RELACIONAM
+Linguagem de exploração -> para acessar ou inserir dados
+"Structured English Query Lenguase" ==>>mais antiga SEQUEL
+"Structured Query Lenguase"  ==>> SQL 
+Obs:: Query são respostas a solicitações ==>CONSULTAS -->>Usuários inserem comandos e o SGDB retorna uma resposta
+ANSII SQL -->> SQL Padronizado pela ansii e iso
+
+--ALGUNS BANCOS DE DADOS 
+>>
+--PAGOS>>>>>>>>>
+ORACLE
+SQL SERVER - MICROSOFIT
+IBM
+TH BASE
+--GRATUITOS>>>>>>
+MYSQL
+MARIA DB
+FIREBIRD
+POSTGREE
+------------------------------------------------------------------------------------------------------------------
+
+TIPOS DA LINGUAGEM MYSQL 
+DDL-> Comandos de definições (criar,definir e alterar)
+DML-> ------x---- manipulação (incluir,excluir,alterar)
+DQL-> -----x----- solicitação (select,resposta)
+DCL-> -----x----- controle (definir o que users vão fazer)
+DTL-> ----x------ Transações ==>> São definidas da seguinte forma ::::: 
+    D urabilidade
+    I solamento
+    C onsistencia
+    A tomicidade
+
+-----------------------------------------------------------------------------------------------------------------
+--              <<<<<<<<<<<<<--- COMANDOS DDL:::::: DATA DEFINITION LANGUAGE --->>>>>>>>>>>>>>
+Comandos que mexem na Definição da tabela -->>defino estruturas
+
+
+--                               CREATE DATABASE/TABLE;
+*create database cadastro default character set utf8 default collate utf8_general_ci;
+
+CREATE TABLE;  Criar tabela.
+ 
+EXEMPLO TABELA PESSOAS>>>>> 
+*create table pessoas(id int not null auto_increment, nome varchar(30) not null, nascimento date, sexo enum ('M','F'), peso decimal(5,2), altura decimal(3,2), nacionalidade varchar(20) default 'brasil', primary key(id) ) default charset=utf8;
+
+EXEMPLO TABELA CURSOS>>>> 
+OUTRA FORMA:Usando if not exists ou if exists --->>> Evita sobrescrição de uma tabala salva anteriormente.
+*create table IF NOT EXISTS cursos(nome varchar(30)not null UNIQUE, descrição text, carga int UNSIGNED, totaulas int unsigned, ano year default '2016' )default charset = utf8;
+Obs: Não confundir parâmetro UNIQUE com PRIMARY KEY.
+
+--                                DROP DATABASE/TABLE;
+DROP TABLE : apagar tabela
+*drop table pessoas;
+*drop database pessoas;
+
+--                                ALTER TABLE; 
+ALTER TABLE: alterar colunas tabela
+
+EXEMPLO TABELA PESSOAS>>>>>
+*alter table pessoas ADD column profissao varchar(10); -->>Para adicionar um campo.
+*alter table pessoas DROP column profissao ; -->>  obs: pode omitir a palavra COLUMN(nome da coluna) -->Para apagar um campo.
+*alter table pessoas add column profissao varchar(10)AFTER nome; -->> after='depois' obs: não existe before(antes)
+:::obs:caso eu queira colocar na primeira posição -->>alter table pessoas add column profissao varchar(10) FIRST;
+*alter table pessoas MODIFY column profissao varchar(10);
+*alter table pessoas RENAME TO gafanhotos ; ::: Modificar(renomear) nome da tabela.
+
+EXEMPLO TABELA CURSOS>>>>>>>>>>
+Adicionando uma chave primária  a table:::---->>>>
+*alter table cursos ADD COLUMN idcurso int first; 
+*alter table cursos ADD PRIMARY KEY(idcurso);
+
+
+--                 <<<<<<<<<<<---  DML:::::: DATA MANIPULATION LANGUAGE --->>>>>>>>>>
+ Comandos que manipulam a tabela --->> modifico os dados 
+                                 
+
+--                                  INSERT INTO;
+INSERT INTO; :Inserir dados na tabela
+
+EXEMPLO TABELA PESSOAS >>>>>>
+*insert into pessoas (id, nome,nascimento, sexo, peso, altura, nacionalidade )  values ('1', 'Godofredo', '1984-01-02', 'M', '78.5', '1.83', 'Brasil');
+OUTRA FORMA:
+*insert into pessoas  ( id, nome,nascimento, sexo, peso, altura, nacionalidade )  values (DEFAULT, 'João', '1979-01-02', 'M', '90.5', '1.67', 'Russo');
+OUTRA FORMA:  -->>Posso omitir os campos desta forma
+*insert into pessoas VALUES (DEFAULT, 'Pedro', '1930-01-02', 'M', '80.7', '1.77', Default);
+OUTRA FORMA:
+*insert into pessoas  ( id, nome,nascimento, sexo, peso, altura, nacionalidade )  values (DEFAULT, 'João', '1979-01-02', 'M', '90.5', '1.67', 'Russo'),(default, paulo, ..... ),(        ),(        );
+
+EXEMPLO TABELA CURSOS>>>>
+*insert into cursos values ('1', 'HTML4', 'Curso de Html5', '40', '37','2014'),('2', 'Algoritmos','Lógica de Programação', '20', '15', '2014'),('3', 'Photoshop','Dicas de Photoshop cc', '10', '8', '2014'),('4', 'Pgp', 'Curso de PHP para iniciantes', '40', '20','2010'),('5', 'JAVA', 'indtrodução a linguagem Java', '10', '29', '2000'),('6', 'mysql','Banco de dados', '30', '15', '2016'),('7', 'Word', 'Curso completo de Word', '40', '30','2016');
+                             
+                   --------- MANIPUALANDO REGISTROS (LINHAS, TUPLAS) ---------
+
+--                               UPDATE
+UPDATE : Atualizar registros
+--SET: selecionar FIELD (campos)
+--WHERE: Mostrar ONDE modificar com base em CHAVE PRIMARIA modifico apenas um unico registro, Caso use WHERE com outra opção poderei mudar diversos registro de uma unica vez (****cuidado perigoso****, bloqueado pelo WORKBENCH sendo preciso desabilitar os "safe updades").
+--LIMIT >>define a quantidade de linhas a serem alteradas pelo updade.
+
+EXEMPLO NA TABELA CURSOS>>>>
+UPDATE cursos SET nome = 'HTML5' WHERE idcurso = '1';
+UPDATE cursos SET nome = 'PHP', ano = '2015'  WHERE idcurso = '4';
+UPDATE cursos SET nome = 'PHP', ano = '2015', carga = '40'  WHERE idcurso = '4' LIMIT 1;
+
+
+--                               DELETE
+
+
+DELETE : Deletar registros
+--FROM indica conde apagar
+
+EXEMPLO NA TABELA CURSOS>>>>>
+DELETE FROM cursos WHERE idcursos='4'; --(usando a chave primária)
+DELETE FROM cursos WHERE ano='2015'; --(deletará todos os registros onde o ano for 2015)
+DELETE FROM cursos WHERE ano='2015' LIMIT 3; --(Limitara o delete a 3 registros)
+
+--                                TRUNCATE
+
+TRUNCATE: Apagar todos os registros da tabela (Apaga os registros da tabela sem apagar as definições da tabela)
+
+EXEMPLO NA TABELA CURSOS>>>>>>
+TRUNCATE table cursos; ou TRUNCATE cursos (pode omitir o TABLE)
+
+-----------------------------------------------------------------------------------------------------------------
+--               <<<<<<<<<<<<<<<<------GERENCIAMENTO DE CÓPIA DE SEGURANÇA----->>>>>>>>>>>>
+ 
+
+--                             BACKUP
+
+O BACKUP DO BANCO DE DADOS É CHAMADO DE DUMP.(Usando o Workbench procurar por server->data export; e clicar em start export;
+
+Através do Terminal>>>
+
+SERVER>>>>
+*mysqldump -uusuario -h xxx.xxx.xxx.xxx -p nomedobanco > nomedobanco.sql
+
+-mysqldump – é o comando principal, o que vem depois dele são os parâmetros;
+-uusuario – com o -u estamos dizendo que usaremos autenticação por usuário, e logo em seguida o usuário é o nome do usuário cadastrado no banco de dados com as permissões necessárias para executarmos um dump, substitua-o de acordo com o que você precisar.
+-h xxx.xxx.xxx.xxx substitua o xxx.xxx.xxx.xxx pelo ip de seu servidor MySQL ou endereço de acesso.
+-p – Para que seja solicitada a senha do usuário para acessar o banco, é possível também digitá-la logo em seguida do parâmetro sem espaços, assim como foi feito com o usuário, porém encontrei problemas com senhas que tenham espaço, então preferi deste modo onde digito a senha após dar enter;
+nomedobanco – Substitua este campo pelo nome do banco de dados MySQL que deseja executar o dump;
+nomedobanco.sql – O nome do arquivo com o dump do banco de dados MySQL a ser gerado em seu computador local.
+
+OUTRA FORMA:::>>>>
+*mysqldump -uroot -p cadastro > backup.sql
+*mysqldump -uroot -p15161522 cadastro > backup.sql
+ EXPORTAR COM O BZIP2>> mysqldump -uroot -psenha123 nomedobanco | bzip2 > nomedobanco.sql.bz2
+ EXPORTAR COM O GZIP>>>mysqldump -uroot -psenha123 nomedobanco | gzip > nomedobanco.sql.gz         
+OUTRA FORMA:::>>>>>
+EXPORTAR APENAS ROTINAS>>>
+mysqldump --routines -uroot -psenha123 --no-crete-info --no-data
+--no-create-db --skip-opt nome
+
+                    
+--                                    RESTORE 
+
+A RESTAURAÇÃO no workbench é feita através do menu data import.
+
+IMPORTAR COM O TERMINAL:>>
+mysql -uroot -psenha123 nomedobanco < nomedobanco.sql
+  IMPORTAR COM O BZIP2>>bunzip2 < nomedobanco.sql.bz2 | mysql -uroot -psenha123 nomedobanco
+  IMPORTAR COM O GZIP>>gunzip < nomedobanco.sql.gz | mysql -uroot -psenha123 nomedobanco
+
+
+            
+
+
+
+------------------------------------------------------------------------------------------------------------------
+CHANGE COLUMN : alterar o nome de um campo
+*alter table pessoas CHANGE column profissao prof varchar(20);
+0
+                               SELECT;
+select * from pessoas; : exibir dados de uma tabela
+
+
+--###############################################################################################################
+--   EXEMPLOS DE TABELAS QUE SÃO EXIBIDAS NO TERMINAL
+--**********************************************************************************************************
+--TABELA CURSOS:::
+desc cursos;      OU    describe cursos; >>>>>>
++-------------+------------------+------+-----+---------+-------+
+| Field       | Type             | Null | Key | Default | Extra |
++-------------+------------------+------+-----+---------+-------+
+| idcurso     | int(11)          | NO   | PRI | 0       |       |
+| nome        | varchar(30)      | NO   | UNI | NULL    |       |
+| descrição   | text             | YES  |     | NULL    |       |
+| carga       | int(10) unsigned | YES  |     | NULL    |       |
+| totaulas    | int(10) unsigned | YES  |     | NULL    |       |
+| ano         | year(4)          | YES  |     | 2016    |       |
++-------------+------------------+------+-----+---------+-------+
+
+select *from cursos;  >>>>>>>>>
++---------+------------+--------------------------------+-------+----------+------+
+| idcurso | nome       | descrição                      | carga | totaulas | ano  |
++---------+------------+--------------------------------+-------+----------+------+
+|       1 | HTML5      | Curso de Html5                 |    40 |       37 | 2014 |
+|       2 | Algoritmos | Lógica de Programação          |    20 |       15 | 2014 |
+|       3 | Photoshop  | Dicas de Photoshop cc          |    10 |        8 | 2014 |
+|       4 | PHP        | Curso de PHP para iniciantes   |    40 |       20 | 2015 |
+|       5 | JAVA       | indtrodução a linguagem Java   |    10 |       29 | 2000 |
+|       6 | mysql      | Banco de dados                 |    30 |       15 | 2016 |
+|       7 | Word       | Curso completo de Word         |    40 |       30 | 2016 |
++---------+------------+--------------------------------+-------+----------+------+
+
+--**********************************************************************************************************
+--TABELA PESSOAS::::
+desc pessoas;   >>>>>>>>>>>>>>
++---------------+---------------+------+-----+---------+----------------+
+| Field         | Type          | Null | Key | Default | Extra          |
++---------------+---------------+------+-----+---------+----------------+
+| id            | int(11)       | NO   | PRI | NULL    | auto_increment |
+| nome          | varchar(30)   | NO   |     | NULL    |                |
+| prof          | varchar(20)   | YES  |     |         |                |
+| nascimento    | date          | YES  |     | NULL    |                |
+| sexo          | enum('M','F') | YES  |     | NULL    |                |
+| peso          | decimal(5,2)  | YES  |     | NULL    |                |
+| altura        | decimal(3,2)  | YES  |     | NULL    |                |
+| nacionalidade | varchar(20)   | YES  |     | brasil  |                |
++---------------+---------------+------+-----+---------+----------------+
+
+select *from pessoas; >>>>>>
++----+-----------+------+------------+------+-------+--------+---------------+
+| id | nome      | prof | nascimento | sexo | peso  | altura | nacionalidade |
++----+-----------+------+------------+------+-------+--------+---------------+
+|  1 | Godofredo | NULL | 1984-01-02 | M    | 78.50 |   1.83 | Brasil        |
+|  2 | Maria     | NULL | 1989-01-02 | F    | 80.50 |   1.73 | Brasil        |
+|  3 | João      | NULL | 1979-01-02 | M    | 90.50 |   1.67 | Russo         |
+|  4 | Pedro     | NULL | 1930-01-02 | M    | 80.70 |   1.77 | brasil        |
++----+-----------+------+------------+------+-------+--------+---------------+
+
+
+
+
+
+
+
