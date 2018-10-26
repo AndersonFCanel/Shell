@@ -1,0 +1,127 @@
+
+Segue abaixo sintaxe do comando:
+
+C:\robocopy <origem> <destino>
+
+Exemplo: c:\robocopy c:\Dados d:\Backup_Dados
+
+Este seria a forma mais simples de usar o comando robocopy.
+
+Utilizando os parâmetros;
+
+/S – Copia todos os diretórios e subdiretórios, menos os que estão vazios.
+
+/E – Copia todos os diretório e subdiretórios, inclusive os que estão vazios.
+
+/SEC – Copia todas as permissões NTFS.
+
+/PURGE – Remove no diretório de destino os arquivos que não existem no diretório de origem. Ou seja, é feita uma sincronização entre a origem e o destino.
+
+/MIR – Esse parâmetro substitui o /E e /PURGE. E também é feita uma sincronização entre a origem e o destino. Ou seja, se existir arquivos dentro do destino que não existe no de origem, o parâmetro vai deletar aqueles que estão no destino.
+
+/XF *.<extenção> – Esse parâmetro exclui a cópia de arquivos com extenções determinadas por você. Exemplo:
+
+c:\robocopy c:\dados d:\Backup_dados /XF *.jpg *.doc
+
+/LOG:arquivo – Cria um arquivo de log ao final da execução do robocopy.
+
+Exemplo: c:\robocopy c:\Dados d:\Backup_Dados /LOG:c:\arquivo_log.txt
+
+/LOG+:arquivo – Igual ao parâmetro anterior, mais ao invés de sobescrever o arquivo_log.txt, ele adiciona no mesmo arquivo o resultado da execução.
+
+/MOV – Deleta todos os arquivos somente da origem após a execução do comando.
+
+/ETA - Exibe o tempo estimado que a cópia dos dados levou para serem copiados.
+
+/MAX:n – Copia somente os arquivos que tenham no máximo n bytes.
+
+/MIN:n – Copia somente arquivos que tenham no mínimo n bytes.
+
+/MAXAGE:n - Não copia arquivos antigos que um número especificado de dias na variável n.
+
+/MINAGE:n - Não copia arquivos que não tenham uma idade mínima de dias na variável n.
+
+/Z - Reinicia a cópia de onde parou no caso de alguma falha.
+
+Estes são os parâmetros que mais uso no dia a dia. Segue abaixo alguns exemplos do comando robocopy.
+
+1 – c:\robocopy c:\dados e:\backup_dados /sec /mir
+
+2 – c:\robocopy \\servidorarq\dados \\servidor_back\dados /sec /mir /log:c:\log_backup.txt
+
+3 – c:\robocopy c:\dados e:\backup_dados /sec /mir /XF *.jpg
+
+4 – c:\robocopy c:\dados \\servidor_back\backup_dados /sec /mir /mov
+
+Caso exista pastas nomeadas com espaço, é necessário fazer a inclusão de aspas no diretório. Exemplo:
+
+Você tem um pasta que se chama “Arquivos Recentes”
+
+c:\robocopy “c:\Arquivos Recentes” “e:\Recentes Back” /e /séc
+
+
+
+
+
+
+
+
+
+
+
+Sincronizando arquivos com o robocopy - Parte 1
+O robocopy pode ser utilizado de várias maneiras para sincronizar arquivos entre computadores, ou mesmo entre dispositivos de armazenamento. A única desvantagem é que é que só sincroniza em uma direção, ou seja, o arquivos são copiados apenas da origem para o destino. Para saber mais sobre o robocopy veja meu outro post sobre o robocopy.
+Para copiar o conteúdo de uma pasta para outro local basta utilizar o comando:
+
+robocopy origem destino
+
+Se quiser incluir as subpastas deve-se acrescentar a opção /s:
+
+robocopy origem destino /s
+Pode ser utilizado para se fazer mirror de uma pasta, ou seja, ter dentro dela o mesmo conteúdo de uma outra pasta. Para isso, utiliza-se a opção /mir
+
+robocopy origem destino /mir
+
+O robocopy pode também copiar apenas determinados tipos de arquivos.
+Caso se queira copiar apenas os arquivos de música para um mp3 player, por exemplo:
+
+robocopy origem destino *.mp3 /s
+
+Lembrando que o ele só vai copiar os arquivos novos e os modificados, os arquivos que já existem na pasta de destino não serião copiados novamente.
+Porém, pode-se também fazer o robocopy não copiar arquivos com determinados critérios.
+Por exemplo, não copiar os arquivos extras (arquivos que não existem no destino):
+
+robocopy origem destino *.mp3 /s /xx
+
+Não copiar os arquivos mais novos e mais antigos (arquivos que foram modificado na origem ou destino):
+
+robocopy origem destino *.mp3 /s /xn /xc /xo
+
+Não copiar os arquivos maiores que 5MB (5242880 bytes), nem os menores que 5KB (5120 bytes):
+
+robocopy origem destino *.mp3 /s /max:5242880 /min:5120
+
+É possível também excluir da lista de arquivos a serem copiados determinadas pasta ou arquivos. Por exemplo, não copiar a pasta variados nem o arquivo audio1.mp3
+
+robocopy origem destino *.mp3 /s /xd variados xf audio1.mp3
+
+Uma das grandes vantagens do robocopy é a capacidade de continuar a transferência de um arquivo incompleto, para tanto basta adicionar a opção /Z. Porém em alguns casos não é possível usar o modo reiniciável, por isso há também um outro modo de cópia, o de backup (opção /B). É recomendavel é usar a opção /ZB para que o robocopy tente utilizar o modo reiniciável e, caso o acesso ao arquivo seja negado, usar o modo backup.
+Apenar o robocopy não possuir uma opção de sincronização de mão-dupla (copiar modificações em ambos os sentidos), pode-se utiliza-lo para esse propósito. Basta executar dois comandos de cópia, utilizando as opções a seguir:
+
+robocopy pasta1 pasta2 *.* /xc /xo
+robocopy pasta2 pasta1 *.* /xc /xo
+
+Porém deve se levar em consideração que neste caso o robocopy não copia arquivos que mudaram de tamanho mas não tiveram suas data de modificação atualizada.
+Para facilitar o uso o robocopy ainda permite que a opções sejam salvas para que possam ser utilizadas posteriormente. Para salvar as opções de cópia utiliza-se a opção /save: seguido do nome do arquivo. Para utilizar as opções salvar utiliza-se a opção /job: seguido do nome do arquivo. Ex:
+
+robocopy pasta1 pasta2 *.* /xc /xo /save:copia1
+robocopy pasta2 pasta1 /job:copia1
+
+Ao salvar as opções de cópia ele também salva o caminho das pastas que foram utilizadas. Portanto, se vc precisa usar o mesmo comando de cópia muitas vezes utlizando as mesmas opções e as mesmas pastas, basta salva-las e utilizar /nosd e /nodd para dizer ao programa que deve ser utilizado as pasta que foram salvas no arquivo. Ex:
+robocopy pasta1 pasta2 *.* /xc /xo /save:copia1
+robocopy /nosd /nodd /job:copia1
+
+
+
+
+
